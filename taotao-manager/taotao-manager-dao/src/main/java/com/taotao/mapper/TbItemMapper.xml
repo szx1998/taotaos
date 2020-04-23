@@ -17,4 +17,12 @@
         SELECT * FROM tbitem LIMIT #{index}, #{pageSize};
     </select>
 
+    <update id="updateItemByIds" >
+        UPDATE tbitem SET status = #{type},updated = #{date}
+        <where>
+            <foreach collection="ids" open=" id in ( " separator="," close=")" item="id">
+                #{id}
+            </foreach>
+        </where>
+    </update>
 </mapper>
