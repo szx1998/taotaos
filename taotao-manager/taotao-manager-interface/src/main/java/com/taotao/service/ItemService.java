@@ -13,4 +13,6 @@ public interface ItemService {
     LayuiResult findTbItemByPage(int page,int limit);
 
     TaotaoResult updateItem(List<TbItem> tbItems, int type, Date date);
+
+    LayuiResult getLikeItem(Integer page, Integer limit, String title, Integer priceMin, Integer priceMax, Long cId);
 }

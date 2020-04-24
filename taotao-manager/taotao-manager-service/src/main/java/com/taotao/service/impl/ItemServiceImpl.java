@@ -58,4 +58,23 @@ public class ItemServiceImpl implements ItemService {
 
         return TaotaoResult.build(500,"商品修改失败",null);
     }
+
+    @Override
+    public LayuiResult getLikeItem(Integer page, Integer limit, String title, Integer priceMin, Integer priceMax, Long cId) {
+        if(priceMin == null){
+            priceMin = 0;
+        }
+        if (priceMax == null){
+            priceMax = 1000000000;
+        }
+
+        LayuiResult layuiResult = new LayuiResult();
+        layuiResult.setCode(0);
+        layuiResult.setMsg("");
+        int count = tbItemMapper.findTbItemByLikeCount(title,priceMin,priceMax,cId);
+        layuiResult.setCount(count);
+        List<TbItem> tbItems = tbItemMapper.findTbItemByLike(title,priceMin,priceMax,cId,(page-1)*limit,limit);
+        layuiResult.setData(tbItems);
+        return layuiResult;
+    }
 }

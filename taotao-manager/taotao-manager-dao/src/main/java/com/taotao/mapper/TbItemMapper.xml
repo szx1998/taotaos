@@ -25,4 +25,31 @@
             </foreach>
         </where>
     </update>
+
+    <select id="findTbItemByLikeCount" resultType="int">
+        SELECT COUNT(*) FROM tbItem
+        <where>
+            <if test="title != ''">
+                AND title LIKE "%${title}%" AND
+            </if>
+            price BETWEEN #{priceMin} AND #{priceMax}
+            <if test="cId != null">
+               AND cId = #{cId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findTbItemByLike" resultType="com.taotao.pojo.TbItem">
+        SELECT * FROM tbItem
+        <where>
+            <if test="title != ''">
+                AND title LIKE "%${title}%" AND
+            </if>
+            price BETWEEN #{priceMin} AND #{priceMax}
+            <if test="cId != null">
+                AND cId = #{cId}
+            </if>
+        </where>
+        LIMIT #{index}, #{pageSize};
+    </select>
 </mapper>
