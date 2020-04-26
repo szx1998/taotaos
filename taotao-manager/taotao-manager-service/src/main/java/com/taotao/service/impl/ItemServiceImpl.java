@@ -1,6 +1,7 @@
 package com.taotao.service.impl;
 
 import com.taotao.constant.FTPConstant;
+import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
 import com.taotao.pojo.*;
 import com.taotao.service.ItemService;
@@ -21,6 +22,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private TbItemMapper tbItemMapper;
+    @Autowired
+    private TbItemDescMapper tbItemDescMapper;
 
     @Override
     public TbItem findTbItemById(Long itemId) {
@@ -103,6 +106,34 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return null;
+    }
+
+    @Override
+    public TaotaoResult addItem(TbItem tbItem, String itemDesc) {
+        Date date = new Date();
+        Long itemId = IDUtils.genItemId();
+        tbItem.setId(itemId);
+        tbItem.setStatus((byte) 1);
+        tbItem.setCreated(date);
+        tbItem.setUpdated(date);
+
+        int i = tbItemMapper.addItem(tbItem);
+        if(i <= 0){
+            return TaotaoResult.build(500,"添加商品基本信息失败");
+        }
+
+        TbItemDesc tbItemDesc = new TbItemDesc();
+        tbItemDesc.setItemId(itemId);
+        tbItemDesc.setCreated(date);
+        tbItemDesc.setUpdated(date);
+        tbItemDesc.setItemDesc(itemDesc);
+
+        int j = tbItemDescMapper.addItemDesc(tbItemDesc);
+        if(j <= 0){
+            return TaotaoResult.build(500,"添加商品描述信息失败");
+        }
+
+        return TaotaoResult.build(200,"商品添加成功");
     }
 
 }

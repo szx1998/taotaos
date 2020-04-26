@@ -52,4 +52,8 @@
         </where>
         LIMIT #{index}, #{pageSize};
     </select>
+
+    <insert id="addItem">
+        INSERT INTO tbitem (id,title,sellPoint,price,num,barcode,image,cId,created,updated) VALUE (#{id},#{title},#{sellPoint},#{price},#{num},#{barcode},#{image},#{cId},#{created},#{updated})
+    </insert>
 </mapper>
