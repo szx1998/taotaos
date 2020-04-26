@@ -1,13 +1,17 @@
 package com.taotao.service.impl;
 
+import com.taotao.constant.FTPConstant;
 import com.taotao.mapper.TbItemMapper;
-import com.taotao.pojo.LayuiResult;
-import com.taotao.pojo.TaotaoResult;
-import com.taotao.pojo.TbItem;
+import com.taotao.pojo.*;
 import com.taotao.service.ItemService;
+import com.taotao.utils.FtpUtil;
+import com.taotao.utils.IDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,4 +81,28 @@ public class ItemServiceImpl implements ItemService {
         layuiResult.setData(tbItems);
         return layuiResult;
     }
+
+    @Override
+    public PictureResult addPicture(String filename, byte[] bytes) {
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        String filePath = format.format(new Date());
+        String fileName = IDUtils.genImageName() + filename.substring(filename.indexOf("."));
+
+        boolean b = FtpUtil.uploadFile(FTPConstant.FTP_ADDRESS,FTPConstant.FTP_PORT,FTPConstant.FTP_USERNAME,FTPConstant.FTP_PASSWORD,FTPConstant.FILI_UPLOAD_PATH,filePath,fileName,bis);
+
+        if(b){
+            PictureResult pictureResult = new PictureResult();
+            pictureResult.setCode(0);
+            pictureResult.setMsg("");
+            pictureResult.setData(new PictureData(FTPConstant.IMAGE_BASE_URL+"/"+filePath+"/"+fileName));
+            System.out.println(pictureResult.getData().getSrc());
+            return pictureResult;
+        }
+
+        return null;
+    }
+
 }
