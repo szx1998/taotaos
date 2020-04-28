@@ -2,15 +2,13 @@ package com.taotao.content.service.impl;
 
 import com.taotao.mapper.TbContentCategoryMapper;
 import com.taotao.mapper.TbContentMapper;
-import com.taotao.pojo.LayuiResult;
-import com.taotao.pojo.TbContent;
-import com.taotao.pojo.TbContentCategory;
+import com.taotao.pojo.*;
 import com.taotao.content.service.ItemContentService;
-import com.taotao.pojo.ZtreeResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -67,5 +65,43 @@ public class ItemContentServiceImpl implements ItemContentService {
         List<TbContent> data = tbContentMapper.findContentByPage(categoryId,(page-1)*limit,limit);
         result.setData(data);
         return result;
+    }
+
+    @Override
+    public LayuiResult addContent(TbContent tbContent, Integer page, Integer limit) {
+        LayuiResult result = new LayuiResult();
+        result.setCode(0);
+        result.setMsg("");
+
+        Date date = new Date();
+        tbContent.setCreated(date);
+        tbContent.setUpdated(date);
+        tbContentMapper.addContent(tbContent);
+        Long categoryId = tbContent.getCategoryId();
+        int count = tbContentMapper.findContentByCount(categoryId);
+        result.setCount(count);
+        List<TbContent> data = tbContentMapper.findContentByPage(categoryId,(page-1)*limit,limit);
+        result.setData(data);
+        return result;
+    }
+
+    @Override
+    public List<Ad1Node> showAd1Node() {
+        List<Ad1Node> ad1Nodes = new ArrayList<Ad1Node>();
+        List<TbContent> contents = tbContentMapper.findContentByPage(89L, 0, 10);
+        for (TbContent tbContent: contents ) {
+            Ad1Node ad1Node = new Ad1Node();
+            ad1Node.setSrcB(tbContent.getPic2());
+            ad1Node.setHeight(240);
+            ad1Node.setAlt(tbContent.getTitleDesc());
+            ad1Node.setWidth(670);
+            ad1Node.setSrc(tbContent.getPic());
+            ad1Node.setHref(tbContent.getUrl());
+            ad1Node.setHeightB(240);
+            ad1Node.setWidthB(670);
+            ad1Nodes.add(ad1Node);
+        }
+
+        return ad1Nodes;
     }
 }

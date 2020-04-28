@@ -2,6 +2,7 @@ package com.taotao.controller;
 
 import com.taotao.pojo.LayuiResult;
 import com.taotao.content.service.ItemContentService;
+import com.taotao.pojo.TaotaoResult;
 import com.taotao.pojo.TbContent;
 import com.taotao.pojo.ZtreeResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +19,33 @@ import java.util.List;
 public class ContentController {
 
     @Autowired
-    private ItemContentService contentService;
+    private ItemContentService itContentService;
 
     @RequestMapping("/showContentZtree")
     @ResponseBody
     public List<ZtreeResult> showContentZtree(@RequestParam(value = "id" ,defaultValue = "0") Long id){
-        List<ZtreeResult> results = contentService.getZtreeResult(id);
+        List<ZtreeResult> results = itContentService.getZtreeResult(id);
         return results;
     }
 
     @RequestMapping("/showContentTable")
     @ResponseBody
     public LayuiResult showContentTable(Long categoryId, Integer page,Integer limit){
-        LayuiResult result = contentService.findContentByCategoryId(categoryId,page,limit);
+        LayuiResult result = itContentService.findContentByCategoryId(categoryId,page,limit);
         return result;
     }
 
     @RequestMapping("/deleteContentByCategoryId")
     @ResponseBody
     public LayuiResult deleteContentByCategoryId(@RequestBody List<TbContent> tbContents, @RequestParam(value = "page" ,defaultValue = "1")Integer page,@RequestParam(value = "limit" ,defaultValue = "10")Integer limit){
-        LayuiResult result = contentService.deleteContentByCategoryId(tbContents,page,limit);
+        LayuiResult result = itContentService.deleteContentByCategoryId(tbContents,page,limit);
+        return result;
+    }
+
+    @RequestMapping("/addContent")
+    @ResponseBody
+    public LayuiResult addContent(TbContent tbContent,@RequestParam(value = "page" ,defaultValue = "1")Integer page,@RequestParam(value = "limit" ,defaultValue = "10")Integer limit){
+        LayuiResult result = itContentService.addContent(tbContent,page,limit);
         return result;
     }
 }

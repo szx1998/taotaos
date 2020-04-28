@@ -37,5 +37,6 @@
     <dubbo:registry protocol="zookeeper" address="192.168.47.100:2181"/>
     <!--接收服务-->
     <dubbo:reference interface="com.taotao.service.ItemCatService" id="itemCatService" />
+    <dubbo:reference interface="com.taotao.content.service.ItemContentService" id="itemContentService" />
 
 </beans>

@@ -11,4 +11,6 @@ public interface TbContentMapper {
     List<TbContent> findContentByPage(@Param("categoryId") Long categoryId, @Param("index")int index, @Param("limit")Integer limit);
 
     int deleteContentByCategoryId(@Param("tbContents")List<TbContent> tbContents);
+
+    void addContent(@Param("tbContent")TbContent tbContent);
 }

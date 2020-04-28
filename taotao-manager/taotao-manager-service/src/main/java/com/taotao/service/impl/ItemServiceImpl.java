@@ -100,7 +100,6 @@ public class ItemServiceImpl implements ItemService {
             pictureResult.setCode(0);
             pictureResult.setMsg("");
             pictureResult.setData(new PictureData(FTPConstant.IMAGE_BASE_URL+"/"+filePath+"/"+fileName));
-            System.out.println(pictureResult.getData().getSrc());
             return pictureResult;
         }
 

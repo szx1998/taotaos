@@ -21,4 +21,7 @@
             </if>
         </where>
     </delete>
+    <insert id="addContent">
+        INSERT INTO tbcontent (categoryId,title,subTitle,titleDesc,url,pic,pic2,content,created,updated) VALUE (#{tbContent.categoryId},#{tbContent.title},#{tbContent.subTitle},#{tbContent.titleDesc},#{tbContent.url},#{tbContent.pic},#{tbContent.pic2},#{tbContent.content},#{tbContent.created},#{tbContent.updated})
+    </insert>
 </mapper>
