@@ -7,4 +7,5 @@
     <select id="findTbItemCatByParentId" resultType="com.taotao.pojo.TbItemCat">
         SELECT * FROM tbItemcat WHERE parentId = #{id};
     </select>
+
 </mapper>
