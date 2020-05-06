@@ -2,16 +2,24 @@ package com.taotao.search.service.impl;
 
 import com.taotao.mapper.TbItemMapper;
 import com.taotao.pojo.SearchItem;
+import com.taotao.pojo.SearchResult;
 import com.taotao.pojo.TaotaoResult;
 import com.taotao.search.service.SearchService;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SearchServiceImpl implements SearchService {
@@ -47,5 +55,61 @@ public class SearchServiceImpl implements SearchService {
         }
         // 6、返回TaotaoResult。
         return TaotaoResult.build(500,"导入失败");
+    }
+
+    @Override
+    public SearchResult findItemSearch(String query, Integer page) {
+        SearchResult result = new SearchResult();
+        try {
+            String str = new String(query.getBytes("iso-8859-1"),"UTF-8");
+            SolrQuery solrQuery = new SolrQuery();
+            solrQuery.setQuery(str);
+            solrQuery.set("df","item_keywords");
+            solrQuery.setHighlight(true);
+            solrQuery.addHighlightField("item_title");
+            solrQuery.setHighlightSimplePre("<font style='color:red'>");
+            solrQuery.setHighlightSimplePost("</font>");
+            solrQuery.setStart((page-1)*60);
+            solrQuery.setRows(60);
+
+
+            QueryResponse queryResponse = solrServer.query(solrQuery);
+            SolrDocumentList documentList = queryResponse.getResults();
+            Long totalCount = documentList.getNumFound();
+            Long totalPages = (totalCount%60) == 0 ?(totalCount/60) : (totalCount/60 + 1);
+            result.setTotalCount(totalCount);
+            result.setTotalPages(totalPages);
+
+            List<SearchItem> itemList = new ArrayList<SearchItem>();
+            for(SolrDocument solrDocument : documentList){
+                SearchItem item = new SearchItem();
+
+                item.setId((String) solrDocument.get("id"));
+                item.setCategoryName((String) solrDocument.get("item_category_name"));
+                item.setImage((String) solrDocument.get("item_image"));
+                item.setPrice((long) solrDocument.get("item_price"));
+                item.setSellPoint((String) solrDocument.get("item_sell_point"));
+                //取高亮显示
+                String itemTitle = "";
+                Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
+                List<String> list = highlighting.get(solrDocument.get("id")).get("item_title");
+                //有高亮显示的内容时。
+                if (list != null && list.size() > 0) {
+                    itemTitle = list.get(0);
+                } else {
+                    itemTitle = (String) solrDocument.get("item_title");
+                }
+                item.setTitle(itemTitle);
+                //添加到商品列表
+                itemList.add(item);
+            }
+            result.setItemList(itemList);
+            return result;
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
