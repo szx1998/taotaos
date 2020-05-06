@@ -1,10 +1,14 @@
 package com.taotao.content.service.impl;
 
+import com.taotao.content.service.JedisClient;
 import com.taotao.mapper.TbContentCategoryMapper;
 import com.taotao.mapper.TbContentMapper;
 import com.taotao.pojo.*;
 import com.taotao.content.service.ItemContentService;
+import com.taotao.utils.JsonUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +23,12 @@ public class ItemContentServiceImpl implements ItemContentService {
 
     @Autowired
     private TbContentMapper tbContentMapper;
+
+    @Autowired
+    private JedisClient jedisClient;
+
+    @Value("Ad1Node")
+    private String Ad1Node;
 
     @Override
     public List<ZtreeResult> getZtreeResult(Long id) {
@@ -64,6 +74,7 @@ public class ItemContentServiceImpl implements ItemContentService {
         result.setCount(count);
         List<TbContent> data = tbContentMapper.findContentByPage(categoryId,(page-1)*limit,limit);
         result.setData(data);
+        jedisClient.del(Ad1Node);
         return result;
     }
 
@@ -82,11 +93,19 @@ public class ItemContentServiceImpl implements ItemContentService {
         result.setCount(count);
         List<TbContent> data = tbContentMapper.findContentByPage(categoryId,(page-1)*limit,limit);
         result.setData(data);
+        jedisClient.del(Ad1Node);
         return result;
     }
 
     @Override
     public List<Ad1Node> showAd1Node() {
+        String json = jedisClient.get(Ad1Node);
+        if(StringUtils.isNoneBlank(json)){
+            List<Ad1Node> nodes = JsonUtils.jsonToList(json, Ad1Node.class);
+//            System.out.println("从缓存中获取");
+            return nodes;
+        }
+
         List<Ad1Node> ad1Nodes = new ArrayList<Ad1Node>();
         List<TbContent> contents = tbContentMapper.findContentByPage(89L, 0, 10);
         for (TbContent tbContent: contents ) {
@@ -101,6 +120,8 @@ public class ItemContentServiceImpl implements ItemContentService {
             ad1Node.setWidthB(670);
             ad1Nodes.add(ad1Node);
         }
+        jedisClient.set(Ad1Node,JsonUtils.objectToJson(ad1Nodes));
+//        System.out.println("从数据库中获取");
 
         return ad1Nodes;
     }

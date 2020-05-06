@@ -1,9 +1,6 @@
 package com.taotao.service;
 
-import com.taotao.pojo.LayuiResult;
-import com.taotao.pojo.PictureResult;
-import com.taotao.pojo.TaotaoResult;
-import com.taotao.pojo.TbItem;
+import com.taotao.pojo.*;
 
 import java.util.Date;
 import java.util.List;
