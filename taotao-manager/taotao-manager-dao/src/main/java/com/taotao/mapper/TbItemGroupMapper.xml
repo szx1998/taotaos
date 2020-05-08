@@ -10,4 +10,13 @@
     <select id="findKeyByGroupId" resultType="com.taotao.pojo.ParamKeys">
         SELECT * FROM tbitemparamkey WHERE groupId = #{groupId};
     </select>
+    <insert id="addItemGroup">
+        INSERT INTO tbitemparamgroup (groupName,itemCatId) VALUE (#{groupName},#{itemCatId});
+    </insert>
+    <select id="findItemGroupIdByIDAndName" resultType="int">
+        SELECT id FROM tbitemparamgroup WHERE itemCatId = #{itemCatId} AND groupName = #{groupName};
+    </select>
+    <insert id="addItemKey">
+        INSERT INTO tbitemparamkey (paramName, groupId) VALUE (#{paramName},#{groupId});
+    </insert>
 </mapper>

@@ -23,10 +23,34 @@ public class ItemGroupServiceImpl implements ItemGroupService {
             group.setParamKeys(keys);
         }
         TaotaoResult result = new TaotaoResult();
+
+        if(groupList.size() <= 0){
+            return TaotaoResult.build(500,"没有规格参数规格参数");
+        }
         result.setStatus(200);
         result.setMsg("有规格参数");
         result.setData(groupList);
 
         return result;
+    }
+
+    @Override
+    public TaotaoResult addItemGroup(Long cId, String params) {
+        String[] groups = params.split("clive");
+        for(int i = 0; i < groups.length; i++){
+            String[] keys = groups[i].split(",");
+            int n = tbItemGroupMapper.addItemGroup(cId,keys[0]);
+            if(n <= 0){
+                return TaotaoResult.build(500,"添加规格参数组失败");
+            }
+            int id = tbItemGroupMapper.findItemGroupIdByIDAndName(cId,keys[0]);
+            for(int j = 1; j < keys.length; j++){
+                int m = tbItemGroupMapper.addItemKey(id,keys[j]);
+                if(m <= 0){
+                    return TaotaoResult.build(500,"添加规格参数项失败");
+                }
+            }
+        }
+        return TaotaoResult.build(200,"添加规格参数组成功");
     }
 }

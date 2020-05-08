@@ -3,13 +3,18 @@ package com.taotao.service.impl;
 import com.taotao.constant.FTPConstant;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
+import com.taotao.mapper.TbItemParamItemMapper;
+import com.taotao.mapper.TbItemParamMapper;
 import com.taotao.pojo.*;
 import com.taotao.service.ItemService;
 import com.taotao.utils.FtpUtil;
 import com.taotao.utils.IDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
+import javax.jms.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +28,13 @@ public class ItemServiceImpl implements ItemService {
     private TbItemMapper tbItemMapper;
     @Autowired
     private TbItemDescMapper tbItemDescMapper;
+    @Autowired
+    private TbItemParamItemMapper tbItemParamItemMapper;
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
+    @Autowired
+    private Destination destination;
 
     @Override
     public TbItem findTbItemById(Long itemId) {
@@ -107,9 +119,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public TaotaoResult addItem(TbItem tbItem, String itemDesc) {
+    public TaotaoResult addItem(TbItem tbItem, String itemDesc,String[] paramKeyIds, String[] paramValue) {
         Date date = new Date();
-        Long itemId = IDUtils.genItemId();
+        final Long itemId = IDUtils.genItemId();
         tbItem.setId(itemId);
         tbItem.setStatus((byte) 1);
         tbItem.setCreated(date);
@@ -130,6 +142,24 @@ public class ItemServiceImpl implements ItemService {
         if(j <= 0){
             return TaotaoResult.build(500,"添加商品描述信息失败");
         }
+        int count = 0;
+        for(int s = 0; s < paramKeyIds.length; s++){
+            Integer keyId = Integer.valueOf(paramKeyIds[s]);
+            String value = paramValue[s];
+            count = tbItemParamItemMapper.addParameter(tbItem.getcId(),keyId,value);
+        }
+        if(count <= 0){
+            return TaotaoResult.build(500,"添加商品参数信息失败");
+        }
+
+        jmsTemplate.send(destination, new MessageCreator() {
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                TextMessage textMessage = session.createTextMessage();
+                textMessage.setText(itemId+"");
+                return textMessage;
+            }
+        });
 
         return TaotaoResult.build(200,"商品添加成功");
     }

@@ -16,5 +16,5 @@ public interface ItemService {
 
     PictureResult addPicture(String Filename, byte[] bytes);
 
-    TaotaoResult addItem(TbItem tbItem, String itemDesc);
+    TaotaoResult addItem(TbItem tbItem, String itemDesc,String[] paramKeyIds, String[] paramValue);
 }
