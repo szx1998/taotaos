@@ -78,7 +78,6 @@ public class ItemController {
     @RequestMapping("/addItem")
     @ResponseBody
     public TaotaoResult addItem(TbItem tbItem, String itemDesc, @RequestParam("paramKeyIds[]") String[] paramKeyIds, @RequestParam("paramValue[]")String[] paramValue){
-        System.out.println(paramKeyIds);
         TaotaoResult result = itemService.addItem(tbItem,itemDesc, paramKeyIds,paramValue);
         return result;
     }

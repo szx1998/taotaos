@@ -18,15 +18,15 @@ public class ItemGroupServiceImpl implements ItemGroupService {
     @Override
     public TaotaoResult showItemGroup(Long cId) {
         List<ItemGroup> groupList = tbItemGroupMapper.findGroupByCId(cId);
+        if(groupList.size() <= 0){
+            return TaotaoResult.build(500,"没有规格参数规格参数");
+        }
         for (ItemGroup group: groupList) {
             List<ParamKeys> keys = tbItemGroupMapper.findKeyByGroupId(group.getId());
             group.setParamKeys(keys);
         }
         TaotaoResult result = new TaotaoResult();
 
-        if(groupList.size() <= 0){
-            return TaotaoResult.build(500,"没有规格参数规格参数");
-        }
         result.setStatus(200);
         result.setMsg("有规格参数");
         result.setData(groupList);
