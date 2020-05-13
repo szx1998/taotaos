@@ -27,6 +27,7 @@
         </dependency>
     </dependencies>
 
+    <!-- 配置tomcat插件 -->
     <build>
         <plugins>
             <plugin>
@@ -39,4 +40,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
