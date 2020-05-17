@@ -44,7 +44,6 @@ public class CartController {
                 String str = "http://" + split[1];
                 item.setImage(str);
             }
-
             item.setNum(num);
             tbItems.add(item);
         }
