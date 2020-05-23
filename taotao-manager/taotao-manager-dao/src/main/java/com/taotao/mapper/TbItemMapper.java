@@ -1,6 +1,7 @@
 package com.taotao.mapper;
 
 import com.taotao.pojo.SearchItem;
+import com.taotao.pojo.StatisticsResult;
 import com.taotao.pojo.TbItem;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,4 +29,6 @@ public interface TbItemMapper {
     List<SearchItem> findSearchItemAll();
 
     SearchItem findSearchItemById(Long id);
+
+	List<StatisticsResult> fingTbItemGrouping();
 }

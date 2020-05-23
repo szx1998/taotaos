@@ -5,6 +5,7 @@ import com.taotao.constant.RedisConstant;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
 import com.taotao.mapper.TbItemParamMapper;
+import com.taotao.mapper.TbUserMapper;
 import com.taotao.pojo.*;
 import com.taotao.service.ItemService;
 import com.taotao.service.JedisClient;
@@ -34,6 +35,8 @@ public class ItemServiceImpl implements ItemService {
     private TbItemParamMapper tbItemParamMapper;
     @Autowired
     private TbItemDescMapper tbItemDescMapper;
+    @Autowired
+    private TbUserMapper tbUserMapper;
 
     @Autowired
     private JmsTemplate jmsTemplate;
@@ -52,7 +55,6 @@ public class ItemServiceImpl implements ItemService {
             }else{
                 TbItem tbItem = JsonUtils.jsonToPojo(json, TbItem.class);
                 jedisClient.expire(RedisConstant.ITEM_INFO,RedisConstant.REDIS_TIME_OUT+rand);
-                System.out.println("从缓存中获取数据");
                 return tbItem;
             }
         }
@@ -66,7 +68,6 @@ public class ItemServiceImpl implements ItemService {
             jedisClient.set(RedisConstant.ITEM_INFO+":"+itemId, JsonUtils.objectToJson(item));
             jedisClient.expire(RedisConstant.ITEM_INFO+":"+itemId,RedisConstant.REDIS_TIME_OUT+rand);
         }
-        System.out.println("从数据库中获取数据");
         return item;
     }
 
@@ -246,6 +247,12 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return groupList;
+    }
+
+    @Override
+    public int fingUserAll() {
+        int num = tbUserMapper.fingUserAll();
+        return num;
     }
 
 }

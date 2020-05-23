@@ -3,9 +3,14 @@ package com.taotao.sso.controller;
 import com.taotao.constant.RedisConstant;
 import com.taotao.pojo.TaotaoResult;
 import com.taotao.pojo.TbUser;
+import com.taotao.sso.service.JedisClient;
 import com.taotao.sso.service.UserService;
 import com.taotao.utils.CookieUtils;
 import com.taotao.utils.JsonUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,12 +25,19 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/user")
+@Api(value = "User接口",tags = "UserController",description = "User接口")
 public class UserController {
     @Autowired
     private UserService userService;
 
     @RequestMapping(value = "/check/{param}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE+";charset=utf-8")
     @ResponseBody
+    @ApiOperation(value = "校验用户名，手机号，邮箱是否可用",notes = "校验用户名，手机号，邮箱是否可用")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "param", value = "用户信息", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "type", value = "校验类型", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "callback", value = "jsonp类型", required = true, dataType = "String")
+    })
     public Object cheakDate(@PathVariable String param, @PathVariable Integer type, String callback){
         TaotaoResult result = userService.getCheckDateResult(param,type);
         if(StringUtils.isNotBlank(callback)){
@@ -48,9 +60,9 @@ public class UserController {
     @ResponseBody
     public TaotaoResult login(String userName, String passWord, HttpServletRequest request, HttpServletResponse response){
         TaotaoResult result = userService.getTokenByNameAndPass(userName,passWord);
-        Object data = result.getData();
         String token = result.getData().toString();
         CookieUtils.setCookie(request,response, RedisConstant.TT_TOKEN, token);
+
         return result;
     }
 
@@ -68,9 +80,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/logout/{token}",method = RequestMethod.GET)
-    @ResponseBody
-    public TaotaoResult logout(@PathVariable String token){
+    public String logout(@PathVariable String token){
         TaotaoResult result = userService.deleteToken(token);
-        return result;
+
+        return "login";
     }
+
 }

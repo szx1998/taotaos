@@ -17,19 +17,19 @@ public class SearchController {
     private SearchService searchService;
 
     @RequestMapping("/search")
-    public String showSearch(@RequestParam("q") String query, @RequestParam(value = "page",defaultValue = "1")Integer page, Model model){
-
+    public String showSearch(@RequestParam("q") String query, @RequestParam(value = "page",defaultValue = "1")Integer page, Model model) {
         try {
             String str = new String(query.getBytes("iso-8859-1"),"UTF-8");
+            SearchResult result = searchService.findItemSearch(str,page);
+            model.addAttribute("query",str);
+            model.addAttribute("totalPage",result.getTotalPages());
+            model.addAttribute("itemList",result.getItemList());
+            model.addAttribute("totalCount",result.getTotalCount());
+            model.addAttribute("page",page);
+            return "search";
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        SearchResult result = searchService.findItemSearch(query,page);
-        model.addAttribute("query",query);
-        model.addAttribute("totalPage",result.getTotalPages());
-        model.addAttribute("itemList",result.getItemList());
-        model.addAttribute("totalCount",result.getTotalCount());
-        model.addAttribute("page",page);
         return "search";
     }
 }

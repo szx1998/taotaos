@@ -18,6 +18,16 @@ public class TbUser implements Serializable{
 
     private Date updated;
 
+    private Integer status;
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -76,9 +86,15 @@ public class TbUser implements Serializable{
 
 	@Override
 	public String toString() {
-		return "TbUser [id=" + id + ", userName=" + userName + ", passWord=" + passWord + ", phone=" + phone
-				+ ", email=" + email + ", created=" + created + ", updated=" + updated + "]";
+		return "TbUser{" +
+				"id=" + id +
+				", userName='" + userName + '\'' +
+				", passWord='" + passWord + '\'' +
+				", phone='" + phone + '\'' +
+				", email='" + email + '\'' +
+				", created=" + created +
+				", updated=" + updated +
+				", status=" + status +
+				'}';
 	}
-
-   
 }

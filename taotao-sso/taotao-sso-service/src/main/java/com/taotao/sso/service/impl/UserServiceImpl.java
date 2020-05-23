@@ -74,6 +74,7 @@ public class UserServiceImpl implements UserService {
         Date date = new Date();
         tbUser.setCreated(date);
         tbUser.setUpdated(date);
+        tbUser.setStatus(0);
         //md5加密
         String md5Pass = DigestUtils.md5DigestAsHex(tbUser.getPassWord().getBytes());
         tbUser.setPassWord(md5Pass);
@@ -81,6 +82,8 @@ public class UserServiceImpl implements UserService {
         if(i == 0){
             return TaotaoResult.build(500,"注册失败");
         }
+
+        jedisClient.incr(RedisConstant.USER_NEW_ADD);
 
         return TaotaoResult.ok();
     }
@@ -95,6 +98,11 @@ public class UserServiceImpl implements UserService {
             jedisClient.set(RedisConstant.USER_INFO+":"+ token,"null");
             jedisClient.expire(RedisConstant.USER_INFO + ":" + token, RedisConstant.USER_SHORT_EXPIRE+rand);
             return TaotaoResult.build(500,"用户名或密码有误,请重新输入","null");
+        }
+
+        if(tbUser.getStatus() == 0){
+            tbUserMapper.upDateStatus(1,tbUser.getId());
+            jedisClient.incr(RedisConstant.PAGE_VISITSX);
         }
 
         tbUser.setPassWord(null);
@@ -122,4 +130,5 @@ public class UserServiceImpl implements UserService {
         }
         return TaotaoResult.ok();
     }
+
 }

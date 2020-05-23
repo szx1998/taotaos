@@ -61,9 +61,8 @@ public class SearchServiceImpl implements SearchService {
     public SearchResult findItemSearch(String query, Integer page) {
         SearchResult result = new SearchResult();
         try {
-            String str = new String(query.getBytes("iso-8859-1"),"UTF-8");
             SolrQuery solrQuery = new SolrQuery();
-            solrQuery.setQuery(str);
+            solrQuery.setQuery(query);
             solrQuery.set("df","item_keywords");
             solrQuery.setHighlight(true);
             solrQuery.addHighlightField("item_title");
@@ -71,7 +70,6 @@ public class SearchServiceImpl implements SearchService {
             solrQuery.setHighlightSimplePost("</font>");
             solrQuery.setStart((page-1)*60);
             solrQuery.setRows(60);
-
 
             QueryResponse queryResponse = solrServer.query(solrQuery);
             SolrDocumentList documentList = queryResponse.getResults();
@@ -106,8 +104,6 @@ public class SearchServiceImpl implements SearchService {
             result.setItemList(itemList);
             return result;
         } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return null;

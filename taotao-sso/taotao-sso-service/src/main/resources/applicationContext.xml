@@ -81,6 +81,39 @@
         <constructor-arg name="port" value="6379"/>
     </bean>
 
+
+    <!-- 定时任务实例 -->
+    <bean id="myTimer" class="com.taotao.sso.service.timer.MyTimer"></bean>
+
+    <!-- 定时任务配置 -->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 定时任务 -->
+        <property name="targetObject" ref="myTimer"/>
+        <!-- 定时任务实例中具体方法 -->
+        <property name="targetMethod" value="showTimer"/>
+        <!-- 设置定时任务不并发执行  -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- 定义trigger触发器 -->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!-- 定时任务配置 -->
+        <property name="jobDetail" ref="jobDetail"/>
+        <!-- 定时任务触发时间 每5秒执行一次 -->
+       <!-- <property name="cronExpression" value="*/5 * * * * ?"/>-->
+        <!-- 定时任务触发时间 每日1点执行一次 -->
+        <property name="cronExpression" value="0 0 1 * * ?"/>
+    </bean>
+
+    <!-- 定时任务总开关 -->
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger"/>
+            </list>
+        </property>
+    </bean>
+
     <!--发布服务到注册中心去-->
     <!-- 使用dubbo发布服务 -->
     <!-- 提供方应用信息，用于计算依赖关系 -->

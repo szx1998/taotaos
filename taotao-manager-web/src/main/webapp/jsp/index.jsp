@@ -127,12 +127,12 @@ body, html, #allmap {
 							<div class="layui-card">
 								<div class="layui-card-header">
 									<div>
-										<span>访问量</span> <span style="float: right; margin-top: 13px"
-											class="layui-badge layui-bg-blue">周</span>
+										<span>在线日活</span> <span style="float: right; margin-top: 13px"
+											class="layui-badge layui-bg-blue">天</span>
 									</div>
 								</div>
 								<div class="layui-card-body">
-									<span style="font-size: 36px; color: #676767">99999</span></br> </br> <span
+									<span style="font-size: 36px; color: #676767">${user_login_status}</span></br> </br> <span
 										style="color: #676767">总访问量</span> <i style="float: right;"
 										class="layui-icon layui-icon-flag"></i>
 								</div>
@@ -157,11 +157,11 @@ body, html, #allmap {
 								<div class="layui-card-header">
 									<div>
 										<span>用户总数</span> <span style="float: right; margin-top: 13px"
-											class="layui-badge layui-bg-green">月</span>
+											class="layui-badge layui-bg-green">总</span>
 									</div>
 								</div>
 								<div class="layui-card-body">
-									<span style="font-size: 36px; color: #676767">8000</span></br> </br> <span
+									<span style="font-size: 36px; color: #676767">${user_num}</span></br> </br> <span
 										style="color: #676767">总用户数</span> <i style="float: right;"
 										class="layui-icon layui-icon-user"></i>
 								</div>
@@ -176,7 +176,7 @@ body, html, #allmap {
 									</div>
 								</div>
 								<div class="layui-card-body">
-									<span style="font-size: 36px; color: #676767">16</span></br> </br> <span
+									<span style="font-size: 36px; color: #676767">${user_new_add}</span></br> </br> <span
 										style="color: #676767">新增人数</span> <i style="float: right;"
 										class="layui-icon layui-icon-user"></i>
 								</div>
@@ -210,7 +210,7 @@ body, html, #allmap {
 		</div>
 	</div>
 	<script type="text/javascript">
-		var myChart1 = echarts.init(document.getElementById('echartsMain1'));
+        var myChart1 = echarts.init(document.getElementById('echartsMain1'));
 		var weatherIcons = {};
 		$.get('/itemCat/statisticsItem').done(function(resule) {
 			myChart1.setOption({
@@ -230,7 +230,10 @@ body, html, #allmap {
 					data : resule
 				} ]
 			});
-		})
+		});
+        $.get("/head/getStatistics",{},function (data){
+            $("#visits").html(data.getVisits());
+		});
 
 		//	百度地图API功能
 		var map = new BMap.Map("allmap"); // 创建Map实例
@@ -241,6 +244,8 @@ body, html, #allmap {
 		}));
 		map.setCurrentCity("成都"); // 设置地图显示的城市 此项是必须设置的
 		map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+
+
 	</script>
 
 </body>

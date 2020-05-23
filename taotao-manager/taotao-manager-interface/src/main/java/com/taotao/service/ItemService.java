@@ -21,4 +21,6 @@ public interface ItemService {
     TbItemDesc findTbItemDescByItemId(Long itemId);
 
     List<TbItemParamGroup> findTbItemGroupByItemId(Long itemId);
+
+    int fingUserAll();
 }

@@ -1,6 +1,8 @@
 package com.taotao.service.impl;
 
+import com.alibaba.druid.support.spring.stat.SpringStatUtils;
 import com.taotao.mapper.TbItemCatMapper;
+import com.taotao.mapper.TbItemMapper;
 import com.taotao.pojo.*;
 import com.taotao.service.ItemCatService;
 import com.taotao.service.JedisClient;
@@ -18,6 +20,8 @@ public class ItemCatServiceImpl implements ItemCatService {
 
     @Autowired
     private TbItemCatMapper tbItemCatMapper;
+    @Autowired
+    private TbItemMapper tbItemMapper;
 
     @Autowired
     private JedisClient jedisClient;
@@ -56,6 +60,14 @@ public class ItemCatServiceImpl implements ItemCatService {
         return result;
     }
 
+    @Override
+    public List<StatisticsResult> getStatisticList() {
+        List<StatisticsResult> statisticsResultList = tbItemMapper.fingTbItemGrouping();
+
+        return statisticsResultList;
+
+    }
+
     private List findItemCatList(Long parentId){
         int count = 0;
         List list = new ArrayList();
@@ -85,4 +97,5 @@ public class ItemCatServiceImpl implements ItemCatService {
 
         return list;
     }
+
 }

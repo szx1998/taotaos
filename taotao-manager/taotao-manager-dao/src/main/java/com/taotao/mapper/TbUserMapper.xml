@@ -14,9 +14,18 @@
         SELECT COUNT(*) FROM tbuser WHERE email = #{email};
     </select>
     <insert id="addUser"  parameterType="com.taotao.pojo.TbUser" >
-        INSERT INTO tbuser (userName, passWord, phone, email, created, updated) VALUE (#{userName},#{passWord},#{phone},#{email},#{created},#{updated});
+        INSERT INTO tbuser (userName, passWord, phone, email, created, updated,status) VALUE (#{userName},#{passWord},#{phone},#{email},#{created},#{updated},#{status});
     </insert>
     <select id="findUserByUserNameAndPassWord" resultType="com.taotao.pojo.TbUser">
         SELECT * FROM tbuser WHERE userName = #{userName} AND passWord = #{passWord};
     </select>
+    <update id="upDateStatus">
+        UPDATE tbuser SET status = #{status} WHERE id = #{id};
+    </update>
+    <select id="fingUserAll" resultType="int">
+        SELECT COUNT(*) FROM tbuser
+    </select>
+    <update id="upDateStatusAll">
+        UPDATE tbuser SET status = #{status};
+    </update>
 </mapper>

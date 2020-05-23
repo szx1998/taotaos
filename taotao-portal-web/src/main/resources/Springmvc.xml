@@ -38,5 +38,6 @@
     <!--接收服务-->
     <dubbo:reference interface="com.taotao.service.ItemCatService" id="itemCatService" />
     <dubbo:reference interface="com.taotao.content.service.ItemContentService" id="itemContentService" />
+    <dubbo:reference interface="com.taotao.service.JedisClient" id="jedisClient" />
 
 </beans>

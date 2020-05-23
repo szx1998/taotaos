@@ -99,4 +99,17 @@
         WHERE
             a.id = #{id}
     </select>
+
+    <select id="fingTbItemGrouping" resultType="com.taotao.pojo.StatisticsResult">
+        SELECT
+            tbitemcat.`name` name,
+            COUNT(*) value
+        FROM
+            tbitem,
+            tbitemcat
+        WHERE
+            tbitem.cId = tbitemcat.id
+        GROUP BY
+            tbitem.cId
+    </select>
 </mapper>

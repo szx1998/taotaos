@@ -15,4 +15,8 @@ public interface RedisConstant {
     String ORDER_GET_KEY = "ORDER_GET_KEY";
     String ORDER_ID_BEGIN = "100544";
     String ORDER_ITEM_ID_GEN_KEY = "20200517";
+    String PAGE_VISITS = "PAGE_VISITS";
+    String PAGE_VISITSX = "PAGE_VISITSX";
+    Integer PAGE_VISITS_TIME = 60*60*24;
+    String USER_NEW_ADD = "USER_NEW_ADD";
 }

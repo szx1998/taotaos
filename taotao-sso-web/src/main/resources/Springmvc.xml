@@ -26,9 +26,15 @@
     <!--视图解析器-->
     <bean
             class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF//jsp/" />
+        <property name="prefix" value="/WEB-INF/jsp/" />
         <property name="suffix" value=".jsp" />
     </bean>
+
+    <!-- 自动扫描swagger配置文件,写入swagger资源路径映射 -->
+    <bean id="swaggerconfig" class="com.taotao.sso.swagger2config.Swagger2Config"></bean>
+    <!--重要！配置swagger资源不被拦截-->
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
 
     <!-- 引用dubbo服务 -->
     <dubbo:application name="taotao-sso-web"/>

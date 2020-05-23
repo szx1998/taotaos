@@ -14,4 +14,10 @@ public interface TbUserMapper {
     int addUser(TbUser tbUser);
 
     TbUser findUserByUserNameAndPassWord(@Param("userName") String userName,@Param("passWord") String passWord);
+
+    void upDateStatus(@Param("status")int status, @Param("id")Long id);
+
+    int fingUserAll();
+
+    void upDateStatusAll(int status);
 }
